@@ -1,0 +1,20 @@
+name: Fancy Wallet CLI CI/CD
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - run: pip install .
+      - run: python -m unittest discover -s tests -p '*_test.py'
