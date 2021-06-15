@@ -26,6 +26,19 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.x'
+      - run: |
+          # Check what's the version we're releasing
+          version=$(cat setup.py | grep version | cut -d "'" -f 2)
+          # Check if version already exists in GitHub
+          status_code=$(curl -IL https://api.github.com/repos/gcarrarom/fancy-wallet/git/ref/tags/0.0.1 -w '%{http_code}\n' -o /dev/null)
+
+          if [[ "$status_code" == "404" ]]; then
+            echo "Version $version not assigned yet!"
+          else
+            echo "Version $version already exists!"
+            exit 127
+          fi
+
       - uses: casperdcl/deploy-pypi@v2
         with:
           password: ${{ secrets.PYPI_TOKEN }}
